@@ -15,4 +15,8 @@ class ContactList
   if ARGV[0] == "list"
     puts Contact.all
   end
+
+  if ARGV[0] == "new"
+    puts Contact.create
+  end
 end

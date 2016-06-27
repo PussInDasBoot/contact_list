@@ -5,8 +5,8 @@ require 'pry'
 # Represents a person in an address book.
 # The ContactList class will work with Contact objects instead of interacting with the CSV file directly
 class Contact
-
-  attr_accessor :name, :email
+  @@ids = 0
+  attr_accessor :name, :email, :id
   
   # Creates a new contact object
   # @param name [String] The contact's name
@@ -14,12 +14,13 @@ class Contact
   def initialize(name, email)
     @name = name
     @email = email
+    @id = @@ids += 1
     # TODO: Assign parameter values to instance variables.
   end
 
   # Formats the instances of a new contact nicely
   def format
-    "name: #{self.name}, email: #{self.email}"
+    "#{self.id}: #{self.name} (#{self.email})"
   end
 
   # Provides functionality for managing contacts in the csv file.
@@ -40,6 +41,7 @@ class Contact
     # @param name [String] the new contact's name
     # @param email [String] the contact's email
     def create(name, email)
+      Contact.new(name, email)
       # TODO: Instantiate a Contact, add its data to the 'contacts.csv' file, and return it.
     end
     
