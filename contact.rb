@@ -41,7 +41,18 @@ class Contact
     # @param name [String] the new contact's name
     # @param email [String] the contact's email
     def create(name, email)
-      Contact.new(name, email)
+      # Instantiates a Contact
+      new_contact_array = []
+      new_contact = Contact.new(name, email)
+      new_contact_array << new_contact.name
+      new_contact_array << new_contact.email
+      new_contact_array
+      # add it's data to the contacts.csv file
+      CSV.open('BC_contacts.csv', 'a+') do |csv|
+        csv << new_contact_array
+      end
+      # Return value
+      puts "added entry #{new_contact.format}."
       # TODO: Instantiate a Contact, add its data to the 'contacts.csv' file, and return it.
     end
     
