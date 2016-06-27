@@ -17,6 +17,11 @@ class Contact
     # TODO: Assign parameter values to instance variables.
   end
 
+  # Formats the instances of a new contact nicely
+  def format
+    "name: #{self.name}, email: #{self.email}"
+  end
+
   # Provides functionality for managing contacts in the csv file.
   class << self
 
@@ -25,7 +30,7 @@ class Contact
     def all
       bc_contacts = []
       CSV.foreach('BC_contacts.csv') do |row|
-        bc_contacts << Contact.new(row[0], row[1])
+        bc_contacts << Contact.new(row[0], row[1]).format
       end
       bc_contacts
       # TODO: Return an Array of Contact instances made from the data in 'contacts.csv'.
@@ -55,5 +60,3 @@ class Contact
   end
 
 end
-
-Contact.all

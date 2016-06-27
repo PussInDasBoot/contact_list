@@ -13,6 +13,6 @@ class ContactList
 
 
   if ARGV[0] == "list"
-    p Contact.all
+    puts Contact.all
   end
 end
