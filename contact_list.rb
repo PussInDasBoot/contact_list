@@ -26,6 +26,9 @@ class ContactList
     if ARGV[0] == "show"
       puts Contact.find(ARGV[1])
     end
+    if ARGV[0] == "search"
+      puts Contact.search(ARGV[1])
+    end
   end
 end
 

@@ -60,11 +60,6 @@ class Contact
     # @param id [Integer] the contact id
     # @return [Contact, nil] the contact with the specified id. If no contact has the id, returns nil.
     def find(id)
-      # CSV.open('BC_contacts.csv', 'r') do |csv|
-      #   csv.shift.each_with_index do |line, idx|
-      #     line if idx = id
-      #   end
-      # end
       show = []
       CSV.foreach('BC_contacts.csv') do |row|
         show << Contact.new(row[1], row[2]).format if row[0] == id
@@ -77,6 +72,11 @@ class Contact
     # @param term [String] the name fragment or email fragment to search for
     # @return [Array<Contact>] Array of Contact objects.
     def search(term)
+      search = []
+      CSV.foreach('BC_contacts.csv') do |row|
+        search << Contact.new(row[1], row[2]).format if row.to_s.match(/#{term}/)
+      end
+      search
       # TODO: Select the Contact instances from the 'contacts.csv' file whose name or email attributes contain the search term.
     end
 
