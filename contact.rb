@@ -30,7 +30,7 @@ class Contact
     # @return [Array<Contact>] Array of Contact objects
     def all
       bc_contacts = []
-      CSV.foreach('CONTACTS') do |row|
+      CSV.foreach(CONTACTS) do |row|
         bc_contacts << Contact.new(row[1], row[2], row[0])
       end
       bc_contacts
@@ -43,13 +43,13 @@ class Contact
     def create(name, email)
       # Instantiates a Contact
       # new_contact_array = []
-      new_id = CSV.read('CONTACTS').length + 1
+      new_id = CSV.read(CONTACTS).length + 1
       new_contact = Contact.new(name, email, new_id)
       # new_contact_array << new_contact.id
       # new_contact_array << new_contact.name
       # new_contact_array << new_contact.email
       # add it's data to the contacts.csv file
-      CSV.open('CONTACTS', 'a+') do |csv|
+      CSV.open(CONTACTS, 'a+') do |csv|
         csv << [new_contact.id, new_contact.name, new_contact.email]
       end
       # Return value
@@ -76,7 +76,7 @@ class Contact
     # @return [Array<Contact>] Array of Contact objects.
     def search(term)
       # gives an array of arrays, array containing array which represents each row in csv
-      row_array = CSV.read('CONTACTS')
+      row_array = CSV.read(CONTACTS)
       # row is an array
       row_results = row_array.find_all do |row|
         # are there any rows where any of the values include that term
