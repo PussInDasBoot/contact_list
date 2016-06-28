@@ -6,31 +6,29 @@ class ContactList
 
   # TODO: Implement user interaction. This should be the only file where you use `puts` and `gets`.
 
-  def run
-    puts "Here is a list of available commands:"\
-    "\n new - Create a new contact"\
-    "\n list - List all contacts"\
-    "\n show - Show a contact"\
-    "\n search - Search contacts"
-    if ARGV[0] == "list"
+  def run(arguments)
+    case arguments.shift
+    when "list"
       puts Contact.all
-    end
-
-    if ARGV[0] == "new"
+    when "new"
       puts "What is the person's full name?"
       new_name = $stdin.gets.chomp
       puts "What is their email?"
       new_email = $stdin.gets.chomp
       puts Contact.create(new_name, new_email)
-    end
-    if ARGV[0] == "show"
-      puts Contact.find(ARGV[1])
-    end
-    if ARGV[0] == "search"
-      puts Contact.search(ARGV[1])
+    when "show"
+      puts Contact.find(arguments.shift)
+    when "search"
+      puts Contact.search(arguments.shift)
+    else
+      puts "Here is a list of available commands:"\
+      "\n new - Create a new contact"\
+      "\n list - List all contacts"\
+      "\n show - Show a contact"\
+      "\n search - Search contacts"
     end
   end
 end
 
 lets_go = ContactList.new
-lets_go.run
+lets_go.run(ARGV)

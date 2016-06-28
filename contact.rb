@@ -1,7 +1,7 @@
 require 'csv'
 require 'pry'
 
-
+CONTACTS = "BC_contacts.csv"
 # Represents a person in an address book.
 # The ContactList class will work with Contact objects instead of interacting with the CSV file directly
 class Contact
@@ -11,15 +11,15 @@ class Contact
   # Creates a new contact object
   # @param name [String] The contact's name
   # @param email [String] The contact's email address
-  def initialize(name, email)
+  def initialize(name, email, id = nil)
     @name = name
     @email = email
-    @id = CSV.read('BC_contacts.csv').length + 1
+    @id = id
     # TODO: Assign parameter values to instance variables.
   end
 
   # Formats the instances of a new contact nicely
-  def format
+  def to_s
     "#{self.id}: #{self.name} (#{self.email})"
   end
 
@@ -30,8 +30,8 @@ class Contact
     # @return [Array<Contact>] Array of Contact objects
     def all
       bc_contacts = []
-      CSV.foreach('BC_contacts.csv') do |row|
-        bc_contacts << Contact.new(row[1], row[2]).format
+      CSV.foreach('CONTACTS') do |row|
+        bc_contacts << Contact.new(row[1], row[2], row[0])
       end
       bc_contacts
       # TODO: Return an Array of Contact instances made from the data in 'contacts.csv'.
@@ -42,17 +42,18 @@ class Contact
     # @param email [String] the contact's email
     def create(name, email)
       # Instantiates a Contact
-      new_contact_array = []
-      new_contact = Contact.new(name, email)
-      new_contact_array << new_contact.id
-      new_contact_array << new_contact.name
-      new_contact_array << new_contact.email
+      # new_contact_array = []
+      new_id = CSV.read('CONTACTS').length + 1
+      new_contact = Contact.new(name, email, new_id)
+      # new_contact_array << new_contact.id
+      # new_contact_array << new_contact.name
+      # new_contact_array << new_contact.email
       # add it's data to the contacts.csv file
-      CSV.open('BC_contacts.csv', 'a+') do |csv|
-        csv << new_contact_array
+      CSV.open('CONTACTS', 'a+') do |csv|
+        csv << [new_contact.id, new_contact.name, new_contact.email]
       end
       # Return value
-      "added entry #{new_contact.format}."
+      new_contact
       # TODO: Instantiate a Contact, add its data to the 'contacts.csv' file, and return it.
     end
     
@@ -60,11 +61,13 @@ class Contact
     # @param id [Integer] the contact id
     # @return [Contact, nil] the contact with the specified id. If no contact has the id, returns nil.
     def find(id)
-      show = []
-      CSV.foreach('BC_contacts.csv') do |row|
-        show << Contact.new(row[1], row[2]).format if row[0] == id
-      end
-      show
+      array = self.all
+      array.find_all{ |contact| contact.id == id }
+      # show = []
+      # CSV.foreach('CONTACTS') do |row|
+      #   show << Contact.new(row[1], row[2]) if row[0] == id
+      # end
+      # show
       # TODO: Find the Contact in the 'contacts.csv' file with the matching id.
     end
     
@@ -72,11 +75,22 @@ class Contact
     # @param term [String] the name fragment or email fragment to search for
     # @return [Array<Contact>] Array of Contact objects.
     def search(term)
-      search = []
-      CSV.foreach('BC_contacts.csv') do |row|
-        search << Contact.new(row[1], row[2]).format if row.to_s.match(/#{term}/)
+      # gives an array of arrays, array containing array which represents each row in csv
+      row_array = CSV.read('CONTACTS')
+      # row is an array
+      row_results = row_array.find_all do |row|
+        # are there any rows where any of the values include that term
+        row.any? { |value| value.include?(term) }
       end
-      search
+      # row results is an array of arrays
+      row_results.map do |row|
+        Contact.new(row[1], row[2], row[0])
+      end
+      # search = []
+      # CSV.foreach('BC_contacts.csv') do |row|
+      #   search << Contact.new(row[1], row[2]) if row.to_s.match(/#{term}/)
+      # end
+      # search
       # TODO: Select the Contact instances from the 'contacts.csv' file whose name or email attributes contain the search term.
     end
 
