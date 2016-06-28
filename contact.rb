@@ -5,7 +5,7 @@ require 'pry'
 # Represents a person in an address book.
 # The ContactList class will work with Contact objects instead of interacting with the CSV file directly
 class Contact
-  @@ids = 0
+  # @@ids = 0
   attr_accessor :name, :email, :id
   
   # Creates a new contact object
@@ -14,7 +14,7 @@ class Contact
   def initialize(name, email)
     @name = name
     @email = email
-    @id = @@ids += 1
+    @id = CSV.read('BC_contacts.csv').length + 1
     # TODO: Assign parameter values to instance variables.
   end
 
@@ -31,7 +31,7 @@ class Contact
     def all
       bc_contacts = []
       CSV.foreach('BC_contacts.csv') do |row|
-        bc_contacts << Contact.new(row[0], row[1]).format
+        bc_contacts << Contact.new(row[1], row[2]).format
       end
       bc_contacts
       # TODO: Return an Array of Contact instances made from the data in 'contacts.csv'.
@@ -44,15 +44,15 @@ class Contact
       # Instantiates a Contact
       new_contact_array = []
       new_contact = Contact.new(name, email)
+      new_contact_array << new_contact.id
       new_contact_array << new_contact.name
       new_contact_array << new_contact.email
-      new_contact_array
       # add it's data to the contacts.csv file
       CSV.open('BC_contacts.csv', 'a+') do |csv|
         csv << new_contact_array
       end
       # Return value
-      puts "added entry #{new_contact.format}."
+      "added entry #{new_contact.format}."
       # TODO: Instantiate a Contact, add its data to the 'contacts.csv' file, and return it.
     end
     
@@ -60,6 +60,16 @@ class Contact
     # @param id [Integer] the contact id
     # @return [Contact, nil] the contact with the specified id. If no contact has the id, returns nil.
     def find(id)
+      # CSV.open('BC_contacts.csv', 'r') do |csv|
+      #   csv.shift.each_with_index do |line, idx|
+      #     line if idx = id
+      #   end
+      # end
+      show = []
+      CSV.foreach('BC_contacts.csv') do |row|
+        show << Contact.new(row[1], row[2]).format if row[0] == id
+      end
+      show
       # TODO: Find the Contact in the 'contacts.csv' file with the matching id.
     end
     

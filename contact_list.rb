@@ -21,7 +21,10 @@ class ContactList
       new_name = $stdin.gets.chomp
       puts "What is their email?"
       new_email = $stdin.gets.chomp
-      p Contact.create(new_name, new_email)
+      puts Contact.create(new_name, new_email)
+    end
+    if ARGV[0] == "show"
+      puts Contact.find(ARGV[1])
     end
   end
 end
