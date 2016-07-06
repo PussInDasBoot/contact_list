@@ -1,49 +1,52 @@
 require_relative 'contact'
 require 'pry'
+require 'active_record'
 
 # Interfaces between a user and their contact list. Reads from and writes to standard I/O.
 class ContactList
+
+  def initialize
+    ActiveRecord::Base.establish_connection(
+      :adapter => "postgresql",
+      :host => "localhost",
+      :database => "contact_list",
+      :username => 'development',
+      :password => 'development'
+      )
+  end
 
   # TODO: Implement user interaction. This should be the only file where you use `puts` and `gets`.
 
   def run(arguments)
     case arguments.shift
     when "all"
-      puts Contact.all
+      Contact.all.order(:id).each do |contact|
+        puts contact
+      end
     when "create"
       puts "What is the person's full name?"
       new_name = STDIN.gets.chomp
       puts "What is their email?"
       new_email = STDIN.gets.chomp
-      begin
-        contact = Contact.create(new_name, new_email)
-        puts "#{contact} has been added"
-      rescue EmailExists => ex
-        puts ex.message
-      end
+      contact = Contact.create(name: new_name, email: new_email)
+      puts "#{contact} has been added"
     when "update" 
       puts "What is the person's full name?"
-      new_name = $stdin.gets.chomp
+      new_name = STDIN.gets.chomp
       puts "What is their email?"
-      new_email = $stdin.gets.chomp
-      the_contact = Contact.find(arguments.shift)
-      the_contact.name = new_name
-      the_contact.email = new_email
-      the_contact.save
-      puts "Updated contact to #{the_contact}"
+      new_email = STDIN.gets.chomp
+      contact = Contact.find(arguments.shift)
+      contact.update(name: new_name, email: new_email)
+      puts "Updated contact to #{contact}"
     when "find"
-      result = Contact.find(arguments.shift)
-      puts result ? result : "No such contact"
+      puts contact = Contact.find(arguments.shift)
     when "delete"
-      the_contact = Contact.find(arguments.shift)
-      if the_contact
-        the_contact.destroy
-        puts "Contact has been deleted"
-      else
-        puts "The contact cannot be found"
-      end
+      contact = Contact.find(arguments.shift)
+      contact.destroy
+      puts "#{contact} has been deleted"
     when "search"
-      puts Contact.search(arguments.shift)
+      # How to use REGEX in SQL!
+      puts Contact.where("name ~* ?", "#{arguments.shift}")
     else
       puts "Here is a list of available commands:"\
       "\n create - Create a new contact"\
