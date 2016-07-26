@@ -7,11 +7,11 @@ class ContactList
 
   def initialize
     ActiveRecord::Base.establish_connection(
-      :adapter => "postgresql",
-      :host => "localhost",
-      :database => "contact_list",
-      :username => 'development',
-      :password => 'development'
+      adapter: "postgresql",
+      host: "localhost",
+      database: "contact_list",
+      username: 'development',
+      password: 'development'
       )
   end
 
@@ -46,7 +46,7 @@ class ContactList
       puts "#{contact} has been deleted"
     when "search"
       # How to use REGEX in SQL!
-      puts Contact.where("name ~* ?", "#{arguments.shift}")
+      puts Contact.where("name ~* :shift", shift: arguments.shift)
     else
       puts "Here is a list of available commands:"\
       "\n create - Create a new contact"\
